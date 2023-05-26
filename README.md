@@ -14,7 +14,7 @@ To get started, you need to install Ansible. You can follow the tutorial below:
 ```sh
 git clone https://github.com/leucos/ansible-tuto.git
 ```
-
+  
 ## Usage
 
 Follow the instructions below to use this repository:
