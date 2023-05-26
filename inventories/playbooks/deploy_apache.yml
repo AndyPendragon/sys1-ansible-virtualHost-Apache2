@@ -1,0 +1,39 @@
+  ---
+  - name: Deploy Apache virtualHost configuration
+    hosts: all
+    become: true
+    tasks:
+      - name: Install Apache
+        apt:
+          name: apache2
+          state: present
+
+      - name: Create root directory for virtual hosts
+        file:
+          path: /var/www/html
+          state: directory
+
+      - name: Copy virtual host configuration files
+        template:
+          src: ../templates/virtualhost.conf.j2
+          dest: /etc/apache2/sites-available/{{ item }}.conf
+        with_items:
+          - api.hei.school
+          - back.hei.school
+          - front.hei.school
+        vars:
+          server_name: "{{ item }}"
+          server_alias: "www.{{ item }}"
+          document_root: "/var/www/html/{{ item }}"
+
+      - name: Enable virtual hosts
+        command: a2ensite {{ item }}.conf
+        with_items:
+          - api.hei.school
+          - back.hei.school
+          - front.hei.school
+
+      - name: Restart Apache
+        service:
+          name: apache2
+          state: restarted
